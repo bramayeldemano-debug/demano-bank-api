@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-b(4rlbsdps(%$a3w$+s3(s8^=qz0^e5-)$0lp37z7n(%m1z89f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["demano-bank-api.vercel.app"]
 
 
 # Application definition
