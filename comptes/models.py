@@ -52,3 +52,40 @@ class CompteBancaire(models.Model):
 
     def __str__(self):
         return f"{self.numero_compte} - {self.nom_titulaire}"
+
+
+class TransactionBancaire(models.Model):
+    TYPE_TRANSACTION_CHOICES = [
+        ('DEPOT', 'Dépôt'),
+        ('RETRAIT', 'Retrait'),
+    ]
+
+    compte = models.ForeignKey(
+        CompteBancaire,
+        on_delete=models.CASCADE,
+        related_name='transactions',
+        help_text="Compte concerné par la transaction"
+    )
+    type_transaction = models.CharField(
+        max_length=10,
+        choices=TYPE_TRANSACTION_CHOICES,
+        help_text="Type de transaction bancaire"
+    )
+    montant = models.DecimalField(
+        max_digits=15,
+        decimal_places=2,
+        validators=[MinValueValidator(Decimal('1.00'))],
+        help_text="Montant positif de la transaction"
+    )
+    solde_avant = models.DecimalField(max_digits=15, decimal_places=2)
+    solde_apres = models.DecimalField(max_digits=15, decimal_places=2)
+    description = models.CharField(max_length=255, blank=True, default='')
+    date_transaction = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Transaction Bancaire"
+        verbose_name_plural = "Transactions Bancaires"
+        ordering = ['-date_transaction']
+
+    def __str__(self):
+        return f"{self.type_transaction} {self.montant} - {self.compte.numero_compte}"
