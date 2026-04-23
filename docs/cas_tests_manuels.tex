@@ -1,0 +1,114 @@
+\documentclass[10pt,a4paper]{article}
+
+\usepackage{cmap}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[french]{babel}
+\usepackage{array}
+\usepackage{geometry}
+\usepackage{longtable}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{ragged2e}
+
+\geometry{a4paper, landscape, margin=1.05cm}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{4pt}
+
+\definecolor{headergreen}{RGB}{169, 204, 120}
+\definecolor{titleblue}{RGB}{0, 128, 170}
+\definecolor{sectionpink}{RGB}{174, 37, 105}
+
+\newcolumntype{P}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+
+\begin{document}
+
+\begin{center}
+    {\Large\bfseries\color{titleblue} Catégories de tests logiciels}\\[0.35cm]
+    {\large\bfseries\color{sectionpink} Conception et gestion des cas de test}\\[0.2cm]
+    {\large\bfseries Format de cas de test (modèle 1)}\\[0.35cm]
+\end{center}
+
+\noindent\textbf{Projet :} API de transaction bancaire\\
+\textbf{Étudiant :} Demano Bramael\\
+\textbf{Matricule :} 25G2033\\
+\textbf{Fonctions testées :} création de compte, liste des comptes, consultation, dépôt et retrait.
+
+\vspace{0.35cm}
+
+{\small
+\begin{longtable}{|P{2.1cm}|P{4.8cm}|P{7.1cm}|P{6.2cm}|P{2.4cm}|}
+\hline
+\rowcolor{headergreen}
+\textbf{Test Case ID} &
+\textbf{Test Case Description} &
+\textbf{Test Input (Test Case Value)} &
+\textbf{Expected Results} &
+\textbf{Test Case Status} \\
+\hline
+\endfirsthead
+
+\hline
+\rowcolor{headergreen}
+\textbf{Test Case ID} &
+\textbf{Test Case Description} &
+\textbf{Test Input (Test Case Value)} &
+\textbf{Expected Results} &
+\textbf{Test Case Status} \\
+\hline
+\endhead
+
+TC-001 &
+Créer un compte bancaire valide. &
+\textbf{Méthode :} POST\newline
+\textbf{Endpoint :} /api/comptes/creer/\newline
+\textbf{Données :} numero\_compte = ACC000001, nom\_titulaire = DEMANO BRAMAEL, type\_compte = COURANT, solde = 10000.00 &
+Code HTTP 201. Le compte est créé avec succès et une transaction de dépôt initial est enregistrée. &
+Réussi \\
+\hline
+
+TC-002 &
+Lister les comptes bancaires actifs. &
+\textbf{Méthode :} GET\newline
+\textbf{Endpoint :} /api/comptes/\newline
+\textbf{Données :} aucune donnée dans le corps de la requête. &
+Code HTTP 200. Le système retourne un tableau contenant les comptes actifs. &
+Réussi \\
+\hline
+
+TC-003 &
+Consulter les détails d'un compte bancaire. &
+\textbf{Méthode :} GET\newline
+\textbf{Endpoint :} /api/comptes/\{id\}/\newline
+\textbf{Données :} id = 1 &
+Code HTTP 200. Le système retourne les informations du compte et ses transactions. &
+Réussi \\
+\hline
+
+TC-004 &
+Effectuer un dépôt sur un compte actif. &
+\textbf{Méthode :} POST\newline
+\textbf{Endpoint :} /api/comptes/\{id\}/depot/\newline
+\textbf{Données :} montant = 5000.00, description = Dépôt agence &
+Code HTTP 200. Le solde augmente et une transaction de type DEPOT est enregistrée. &
+Réussi \\
+\hline
+
+TC-005 &
+Effectuer un retrait avec solde suffisant. &
+\textbf{Méthode :} POST\newline
+\textbf{Endpoint :} /api/comptes/\{id\}/retrait/\newline
+\textbf{Données :} montant = 2000.00, description = Retrait guichet &
+Code HTTP 200. Le solde diminue et une transaction de type RETRAIT est enregistrée. &
+Réussi \\
+\hline
+\end{longtable}
+}
+
+\vspace{0.2cm}
+
+\noindent\textbf{Conclusion :} les cinq fonctions principales du système bancaire ont été testées manuellement et les résultats attendus correspondent au comportement de l'API.
+
+\end{document}

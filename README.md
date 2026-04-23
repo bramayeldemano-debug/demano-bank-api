@@ -37,6 +37,10 @@ python manage.py runserver
 - OpenAPI schema : `http://127.0.0.1:8000/api/schema/`
 - Cas de test manuels : `http://127.0.0.1:8000/api/tests-manuels/`
 
+## Documents
+
+- Tableau des cas de test manuels : [`docs/cas_tests_manuels.pdf`](docs/cas_tests_manuels.pdf)
+
 ## Déploiement Render
 
 Paramètres du Web Service :
