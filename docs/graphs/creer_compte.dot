@@ -1,0 +1,21 @@
+digraph creer_compte {
+  rankdir=TB;
+  splines=ortho;
+  nodesep=0.35;
+  ranksep=0.45;
+  node [fontname="Helvetica", fontsize=10, shape=box, style="rounded,filled", fillcolor="#EAF4FF", color="#1F5A99"];
+  edge [fontname="Helvetica", fontsize=9, color="#444444"];
+
+  start [label="Début", shape=ellipse, fillcolor="#D5F5E3", color="#1E8449"];
+  n1 [label="Créer serializer\navec request.data"];
+  d1 [label="serializer.is_valid() ?", shape=diamond, fillcolor="#FFF3CD", color="#B9770E"];
+  n2 [label="Sauvegarder le compte"];
+  n3 [label="Sérialiser la réponse"];
+  ok [label="Retour HTTP 201", shape=ellipse, fillcolor="#D5F5E3", color="#1E8449"];
+  ko [label="Retour HTTP 400", shape=ellipse, fillcolor="#FADBD8", color="#C0392B"];
+
+  start -> n1 -> d1;
+  d1 -> n2 [label="Vrai"];
+  n2 -> n3 -> ok;
+  d1 -> ko [label="Faux"];
+}

@@ -12,6 +12,8 @@
 \usepackage{colortbl}
 \usepackage{enumitem}
 \usepackage{titlesec}
+\usepackage{graphicx}
+\usepackage{float}
 
 \geometry{margin=1.8cm}
 \setlength{\parskip}{0.35em}
@@ -53,11 +55,44 @@ Les cinq fonctionnalités principales de l'API bancaire sont les suivantes :
 \textbf{C1} correspond à la \textbf{couverture des instructions} : chaque instruction du programme doit être exécutée au moins une fois.\\
 \textbf{C2} correspond à la \textbf{couverture des décisions} : chaque décision doit être évaluée au moins une fois à \texttt{vrai} et au moins une fois à \texttt{faux}.
 
+\section{Complexité cyclomatique}
+
+La complexité cyclomatique est calculée ici à partir du graphe de flot de contrôle simplifié, avec la formule :
+
+\[
+M = D + 1
+\]
+
+où \(D\) représente le nombre de décisions du graphe.
+
+\begin{longtable}{|P{4.1cm}|P{3cm}|P{3cm}|P{5cm}|}
+\hline
+\rowcolor{lightgray}
+\textbf{Fonction} & \textbf{Décisions} & \textbf{Complexité \(M\)} & \textbf{Interprétation} \\
+\hline
+Créer un compte & 1 & 2 & Deux chemins : succès ou erreur de validation. \\
+\hline
+Lister les comptes & 0 & 1 & Un seul chemin séquentiel. \\
+\hline
+Consulter un compte & 1 & 2 & Deux chemins : compte trouvé ou introuvable. \\
+\hline
+Effectuer un dépôt & 3 & 4 & Quatre chemins couvrant 404, inactif, données invalides et succès. \\
+\hline
+Effectuer un retrait & 4 & 5 & Cinq chemins couvrant 404, inactif, données invalides, solde insuffisant et succès. \\
+\hline
+\end{longtable}
+
 \section{Graphes de flot de contrôle}
 
-Pour rester fidèle au code source, chaque graphe est donné sous forme de nœuds et d'arcs. Cela permet ensuite d'identifier clairement les chemins d'exécution.
+Pour rester fidèle au code source, chaque graphe est donné sous forme visuelle puis sous forme de nœuds et d'arcs. Cela permet ensuite d'identifier clairement les chemins d'exécution.
 
 \subsection{Fonction 1 : \texttt{creer\_compte}}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.62\textwidth]{docs/graphs/creer_compte.pdf}
+\caption{Graphe de flot de contrôle de \texttt{creer\_compte}}
+\end{figure}
 
 \textbf{Nœuds}
 \begin{itemize}[leftmargin=1cm]
@@ -80,6 +115,12 @@ Pour rester fidèle au code source, chaque graphe est donné sous forme de nœud
 
 \subsection{Fonction 2 : \texttt{liste\_comptes}}
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.48\textwidth]{docs/graphs/liste_comptes.pdf}
+\caption{Graphe de flot de contrôle de \texttt{liste\_comptes}}
+\end{figure}
+
 \textbf{Nœuds}
 \begin{itemize}[leftmargin=1cm]
     \item N1 : début.
@@ -96,6 +137,12 @@ Pour rester fidèle au code source, chaque graphe est donné sous forme de nœud
 \end{itemize}
 
 \subsection{Fonction 3 : \texttt{detail\_compte}}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.58\textwidth]{docs/graphs/detail_compte.pdf}
+\caption{Graphe de flot de contrôle de \texttt{detail\_compte}}
+\end{figure}
 
 \textbf{Nœuds}
 \begin{itemize}[leftmargin=1cm]
@@ -116,6 +163,12 @@ Pour rester fidèle au code source, chaque graphe est donné sous forme de nœud
 \end{itemize}
 
 \subsection{Fonction 4 : \texttt{effectuer\_depot}}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.72\textwidth]{docs/graphs/effectuer_depot.pdf}
+\caption{Graphe de flot de contrôle de \texttt{effectuer\_depot}}
+\end{figure}
 
 \textbf{Nœuds}
 \begin{itemize}[leftmargin=1cm]
@@ -145,6 +198,12 @@ Pour rester fidèle au code source, chaque graphe est donné sous forme de nœud
 \end{itemize}
 
 \subsection{Fonction 5 : \texttt{effectuer\_retrait}}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.78\textwidth]{docs/graphs/effectuer_retrait.pdf}
+\caption{Graphe de flot de contrôle de \texttt{effectuer\_retrait}}
+\end{figure}
 
 \textbf{Nœuds}
 \begin{itemize}[leftmargin=1cm]
