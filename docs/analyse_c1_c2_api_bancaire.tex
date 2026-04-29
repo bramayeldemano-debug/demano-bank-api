@@ -1,0 +1,249 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{enumitem}
+\usepackage{titlesec}
+
+\geometry{margin=1.8cm}
+\setlength{\parskip}{0.35em}
+\setlength{\parindent}{0pt}
+\renewcommand{\arraystretch}{1.25}
+\definecolor{titleblue}{RGB}{0,102,153}
+\definecolor{lightgray}{RGB}{240,240,240}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\titleformat{\section}{\large\bfseries\color{titleblue}}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.6em}{}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE\bfseries Analyse C1 et C2 de l'API bancaire}\\[0.3cm]
+    {\large Suite du devoir de test logiciel}\\[0.5cm]
+\end{center}
+
+\textbf{Projet :} API de transaction bancaire\\
+\textbf{Étudiant :} Demano Bramael\\
+\textbf{Matricule :} 25G2033\\
+\textbf{Code source analysé :} \texttt{comptes/views.py}
+
+\section{Fonctionnalités du logiciel}
+
+Les cinq fonctionnalités principales de l'API bancaire sont les suivantes :
+
+\begin{enumerate}[leftmargin=1.2cm]
+    \item \textbf{Créer un compte bancaire} : enregistre un nouveau compte et crée automatiquement un dépôt initial si le solde d'ouverture est positif.
+    \item \textbf{Lister les comptes bancaires} : retourne tous les comptes actifs disponibles dans le système.
+    \item \textbf{Consulter un compte bancaire} : affiche les informations détaillées d'un compte et l'historique associé.
+    \item \textbf{Effectuer un dépôt} : ajoute un montant au solde du compte et enregistre une transaction de type \texttt{DEPOT}.
+    \item \textbf{Effectuer un retrait} : retire un montant si le compte existe, est actif et possède un solde suffisant, puis enregistre une transaction de type \texttt{RETRAIT}.
+\end{enumerate}
+
+\section{Rappel sur C1 et C2}
+
+\textbf{C1} correspond à la \textbf{couverture des instructions} : chaque instruction du programme doit être exécutée au moins une fois.\\
+\textbf{C2} correspond à la \textbf{couverture des décisions} : chaque décision doit être évaluée au moins une fois à \texttt{vrai} et au moins une fois à \texttt{faux}.
+
+\section{Graphes de flot de contrôle}
+
+Pour rester fidèle au code source, chaque graphe est donné sous forme de nœuds et d'arcs. Cela permet ensuite d'identifier clairement les chemins d'exécution.
+
+\subsection{Fonction 1 : \texttt{creer\_compte}}
+
+\textbf{Nœuds}
+\begin{itemize}[leftmargin=1cm]
+    \item N1 : début de la fonction.
+    \item N2 : création du serializer avec \texttt{request.data}.
+    \item N3 : test \texttt{serializer.is\_valid()}.
+    \item N4 : sauvegarde du compte.
+    \item N5 : sérialisation de la réponse.
+    \item N6 : retour HTTP 201.
+    \item N7 : retour HTTP 400.
+\end{itemize}
+
+\textbf{Arcs} : N1$\rightarrow$N2, N2$\rightarrow$N3, N3(vrai)$\rightarrow$N4, N4$\rightarrow$N5, N5$\rightarrow$N6, N3(faux)$\rightarrow$N7.
+
+\textbf{Chemins}
+\begin{itemize}[leftmargin=1cm]
+    \item P1 : N1 $\rightarrow$ N2 $\rightarrow$ N3(vrai) $\rightarrow$ N4 $\rightarrow$ N5 $\rightarrow$ N6
+    \item P2 : N1 $\rightarrow$ N2 $\rightarrow$ N3(faux) $\rightarrow$ N7
+\end{itemize}
+
+\subsection{Fonction 2 : \texttt{liste\_comptes}}
+
+\textbf{Nœuds}
+\begin{itemize}[leftmargin=1cm]
+    \item N1 : début.
+    \item N2 : récupération des comptes actifs.
+    \item N3 : sérialisation.
+    \item N4 : retour HTTP 200.
+\end{itemize}
+
+\textbf{Arcs} : N1$\rightarrow$N2, N2$\rightarrow$N3, N3$\rightarrow$N4.
+
+\textbf{Chemin unique}
+\begin{itemize}[leftmargin=1cm]
+    \item P1 : N1 $\rightarrow$ N2 $\rightarrow$ N3 $\rightarrow$ N4
+\end{itemize}
+
+\subsection{Fonction 3 : \texttt{detail\_compte}}
+
+\textbf{Nœuds}
+\begin{itemize}[leftmargin=1cm]
+    \item N1 : début.
+    \item N2 : appel à \texttt{get\_compte(pk)}.
+    \item N3 : test \texttt{compte is None}.
+    \item N4 : retour HTTP 404.
+    \item N5 : sérialisation du compte.
+    \item N6 : retour HTTP 200.
+\end{itemize}
+
+\textbf{Arcs} : N1$\rightarrow$N2, N2$\rightarrow$N3, N3(vrai)$\rightarrow$N4, N3(faux)$\rightarrow$N5, N5$\rightarrow$N6.
+
+\textbf{Chemins}
+\begin{itemize}[leftmargin=1cm]
+    \item P1 : N1 $\rightarrow$ N2 $\rightarrow$ N3(vrai) $\rightarrow$ N4
+    \item P2 : N1 $\rightarrow$ N2 $\rightarrow$ N3(faux) $\rightarrow$ N5 $\rightarrow$ N6
+\end{itemize}
+
+\subsection{Fonction 4 : \texttt{effectuer\_depot}}
+
+\textbf{Nœuds}
+\begin{itemize}[leftmargin=1cm]
+    \item N1 : début.
+    \item N2 : récupération du compte.
+    \item N3 : test \texttt{compte is None}.
+    \item N4 : retour HTTP 404.
+    \item N5 : test \texttt{not compte.actif}.
+    \item N6 : retour HTTP 400 compte inactif.
+    \item N7 : création du serializer d'opération.
+    \item N8 : test \texttt{serializer.is\_valid()}.
+    \item N9 : retour HTTP 400 données invalides.
+    \item N10 : lecture du montant et de la description.
+    \item N11 : bloc transactionnel et mise à jour du solde.
+    \item N12 : création de la transaction \texttt{DEPOT}.
+    \item N13 : retour HTTP 200.
+\end{itemize}
+
+\textbf{Arcs} : N1$\rightarrow$N2, N2$\rightarrow$N3, N3(vrai)$\rightarrow$N4, N3(faux)$\rightarrow$N5, N5(vrai)$\rightarrow$N6, N5(faux)$\rightarrow$N7, N7$\rightarrow$N8, N8(faux)$\rightarrow$N9, N8(vrai)$\rightarrow$N10, N10$\rightarrow$N11, N11$\rightarrow$N12, N12$\rightarrow$N13.
+
+\textbf{Chemins}
+\begin{itemize}[leftmargin=1cm]
+    \item P1 : N1 $\rightarrow$ N2 $\rightarrow$ N3(vrai) $\rightarrow$ N4
+    \item P2 : N1 $\rightarrow$ N2 $\rightarrow$ N3(faux) $\rightarrow$ N5(vrai) $\rightarrow$ N6
+    \item P3 : N1 $\rightarrow$ N2 $\rightarrow$ N3(faux) $\rightarrow$ N5(faux) $\rightarrow$ N7 $\rightarrow$ N8(faux) $\rightarrow$ N9
+    \item P4 : N1 $\rightarrow$ N2 $\rightarrow$ N3(faux) $\rightarrow$ N5(faux) $\rightarrow$ N7 $\rightarrow$ N8(vrai) $\rightarrow$ N10 $\rightarrow$ N11 $\rightarrow$ N12 $\rightarrow$ N13
+\end{itemize}
+
+\subsection{Fonction 5 : \texttt{effectuer\_retrait}}
+
+\textbf{Nœuds}
+\begin{itemize}[leftmargin=1cm]
+    \item N1 : début.
+    \item N2 : récupération du compte.
+    \item N3 : test \texttt{compte is None}.
+    \item N4 : retour HTTP 404.
+    \item N5 : test \texttt{not compte.actif}.
+    \item N6 : retour HTTP 400 compte inactif.
+    \item N7 : création du serializer d'opération.
+    \item N8 : test \texttt{serializer.is\_valid()}.
+    \item N9 : retour HTTP 400 données invalides.
+    \item N10 : lecture du montant et de la description.
+    \item N11 : test \texttt{compte.solde < montant}.
+    \item N12 : retour HTTP 400 solde insuffisant.
+    \item N13 : bloc transactionnel et décrément du solde.
+    \item N14 : création de la transaction \texttt{RETRAIT}.
+    \item N15 : retour HTTP 200.
+\end{itemize}
+
+\textbf{Arcs} : N1$\rightarrow$N2, N2$\rightarrow$N3, N3(vrai)$\rightarrow$N4, N3(faux)$\rightarrow$N5, N5(vrai)$\rightarrow$N6, N5(faux)$\rightarrow$N7, N7$\rightarrow$N8, N8(faux)$\rightarrow$N9, N8(vrai)$\rightarrow$N10, N10$\rightarrow$N11, N11(vrai)$\rightarrow$N12, N11(faux)$\rightarrow$N13, N13$\rightarrow$N14, N14$\rightarrow$N15.
+
+\textbf{Chemins}
+\begin{itemize}[leftmargin=1cm]
+    \item P1 : N1 $\rightarrow$ N2 $\rightarrow$ N3(vrai) $\rightarrow$ N4
+    \item P2 : N1 $\rightarrow$ N2 $\rightarrow$ N3(faux) $\rightarrow$ N5(vrai) $\rightarrow$ N6
+    \item P3 : N1 $\rightarrow$ N2 $\rightarrow$ N3(faux) $\rightarrow$ N5(faux) $\rightarrow$ N7 $\rightarrow$ N8(faux) $\rightarrow$ N9
+    \item P4 : N1 $\rightarrow$ N2 $\rightarrow$ N3(faux) $\rightarrow$ N5(faux) $\rightarrow$ N7 $\rightarrow$ N8(vrai) $\rightarrow$ N10 $\rightarrow$ N11(vrai) $\rightarrow$ N12
+    \item P5 : N1 $\rightarrow$ N2 $\rightarrow$ N3(faux) $\rightarrow$ N5(faux) $\rightarrow$ N7 $\rightarrow$ N8(vrai) $\rightarrow$ N10 $\rightarrow$ N11(faux) $\rightarrow$ N13 $\rightarrow$ N14 $\rightarrow$ N15
+\end{itemize}
+
+\section{Jeux de tests dérivés des chemins}
+
+\begin{longtable}{|P{1.8cm}|P{4cm}|P{4.8cm}|P{3.5cm}|P{2cm}|}
+\hline
+\rowcolor{lightgray}
+\textbf{Cas} & \textbf{Fonction} & \textbf{But du test} & \textbf{Chemin visé} & \textbf{Critère} \\
+\hline
+T1 & Créer un compte & données valides & P1 de \texttt{creer\_compte} & C1, C2 \\
+\hline
+T2 & Créer un compte & données invalides ou doublon & P2 de \texttt{creer\_compte} & C2 \\
+\hline
+T3 & Lister les comptes & appel normal de la liste & P1 de \texttt{liste\_comptes} & C1 \\
+\hline
+T4 & Consulter un compte & identifiant existant & P2 de \texttt{detail\_compte} & C1, C2 \\
+\hline
+T5 & Consulter un compte & identifiant inexistant & P1 de \texttt{detail\_compte} & C2 \\
+\hline
+T6 & Dépôt & compte introuvable & P1 de \texttt{effectuer\_depot} & C2 \\
+\hline
+T7 & Dépôt & compte inactif & P2 de \texttt{effectuer\_depot} & C2 \\
+\hline
+T8 & Dépôt & données invalides & P3 de \texttt{effectuer\_depot} & C2 \\
+\hline
+T9 & Dépôt & dépôt valide & P4 de \texttt{effectuer\_depot} & C1, C2 \\
+\hline
+T10 & Retrait & compte introuvable & P1 de \texttt{effectuer\_retrait} & C2 \\
+\hline
+T11 & Retrait & compte inactif & P2 de \texttt{effectuer\_retrait} & C2 \\
+\hline
+T12 & Retrait & données invalides & P3 de \texttt{effectuer\_retrait} & C2 \\
+\hline
+T13 & Retrait & solde insuffisant & P4 de \texttt{effectuer\_retrait} & C2 \\
+\hline
+T14 & Retrait & retrait valide & P5 de \texttt{effectuer\_retrait} & C1, C2 \\
+\hline
+\end{longtable}
+
+\section{Table de progression de couverture}
+
+La table suivante indique quels tests permettent de satisfaire les critères C1 et C2 sur les fonctions principales.
+
+\begin{longtable}{|P{4.2cm}|P{3.8cm}|P{3.8cm}|P{4.8cm}|}
+\hline
+\rowcolor{lightgray}
+\textbf{Fonction} & \textbf{Tests minimaux pour C1} & \textbf{Tests minimaux pour C2} & \textbf{Observation} \\
+\hline
+Créer un compte & T1 + T2 & T1 + T2 & une entrée valide et une entrée invalide couvrent les deux branches du test de validation. \\
+\hline
+Lister les comptes & T3 & T3 & pas de décision interne, donc le chemin unique suffit. \\
+\hline
+Consulter un compte & T4 + T5 & T4 + T5 & il faut un compte existant et un compte inexistant. \\
+\hline
+Effectuer un dépôt & T6 + T7 + T8 + T9 & T6 + T7 + T8 + T9 & quatre chemins sont nécessaires pour couvrir toutes les décisions. \\
+\hline
+Effectuer un retrait & T10 + T11 + T12 + T13 + T14 & T10 + T11 + T12 + T13 + T14 & cinq chemins sont nécessaires à cause du test supplémentaire sur le solde insuffisant. \\
+\hline
+\end{longtable}
+
+\section{Conclusion}
+
+L'analyse du code source montre que la partie la plus simple est la liste des comptes, qui ne contient qu'un chemin d'exécution. Les fonctions de dépôt et de retrait sont les plus importantes pour l'étude C1 et C2, car elles comportent plusieurs décisions successives. Pour le retrait, cinq chemins distincts doivent être identifiés afin de couvrir l'absence du compte, l'inactivité du compte, l'invalidité des données, l'insuffisance du solde et le cas nominal.
+
+Ainsi, la suite du devoir peut s'appuyer directement sur ce document pour présenter :
+\begin{itemize}[leftmargin=1cm]
+    \item les fonctionnalités du logiciel ;
+    \item les graphes de flot de contrôle construits à partir du code source ;
+    \item les différents chemins d'exécution ;
+    \item la table de progression de couverture pour C1 et C2.
+\end{itemize}
+
+\end{document}

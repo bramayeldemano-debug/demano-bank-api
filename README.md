@@ -40,6 +40,7 @@ python manage.py runserver
 ## Documents
 
 - Tableau des cas de test manuels : [`docs/cas_tests_manuels.pdf`](docs/cas_tests_manuels.pdf)
+- Analyse C1 et C2, graphes de flot et chemins : [`docs/analyse_c1_c2_api_bancaire.pdf`](docs/analyse_c1_c2_api_bancaire.pdf)
 
 ## Déploiement Render
 
