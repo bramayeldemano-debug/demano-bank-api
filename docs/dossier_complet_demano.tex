@@ -1,0 +1,73 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{pdfpages}
+\usepackage{enumitem}
+
+\definecolor{titleblue}{RGB}{0,102,153}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{1.5cm}
+
+{\Large\bfseries UNIVERSITE DE YAOUNDE I\par}
+\vspace{0.3cm}
+{\large Faculte des Sciences\par}
+\vspace{0.3cm}
+{\large Departement d'Informatique\par}
+
+\vspace{2cm}
+
+{\Huge\bfseries\color{titleblue} Dossier Complet\par}
+\vspace{0.4cm}
+{\LARGE\bfseries API Bancaire Django\par}
+\vspace{0.4cm}
+{\large Projet de transaction bancaire\par}
+
+\vspace{1.7cm}
+
+\begin{tabular}{ll}
+\textbf{Etudiant :} & Demano Bramael \\
+\textbf{Matricule :} & 25G2033 \\
+\textbf{Depot GitHub :} & \url{https://github.com/bramayeldemano-debug/demano-bank-api} \\
+\textbf{Date :} & Mai 2026 \\
+\end{tabular}
+
+\vfill
+\textbf{Contenu du dossier}
+
+\begin{itemize}[leftmargin=1.2cm]
+\item tableau des cas de test manuels ;
+\item analyse C1 et C2 ;
+\item complexite cyclomatique ;
+\item graphes visuels de flot de controle ;
+\item table de progression des tests.
+\end{itemize}
+
+\end{titlepage}
+
+\section*{Presentation du dossier}
+
+Ce PDF rassemble en un seul document les elements deja produits pour le projet \texttt{demano-bank-api}. Il contient :
+
+\begin{enumerate}[leftmargin=1.2cm]
+\item le tableau des cas de test manuels des fonctions principales ;
+\item l'analyse structurelle C1 et C2 a partir du code source ;
+\item la complexite cyclomatique ;
+\item les graphes visuels de flot de controle ;
+\item la table de progression des tests.
+\end{enumerate}
+
+\newpage
+
+\includepdf[pages=-]{docs/cas_tests_manuels.pdf}
+\includepdf[pages=-]{docs/analyse_c1_c2_api_bancaire.pdf}
+
+\end{document}

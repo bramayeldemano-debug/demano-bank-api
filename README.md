@@ -39,6 +39,7 @@ python manage.py runserver
 
 ## Documents
 
+- Dossier complet rassemble : [`docs/dossier_complet_demano.pdf`](docs/dossier_complet_demano.pdf)
 - Tableau des cas de test manuels : [`docs/cas_tests_manuels.pdf`](docs/cas_tests_manuels.pdf)
 - Analyse C1 et C2, complexité cyclomatique et graphes visuels : [`docs/analyse_c1_c2_api_bancaire.pdf`](docs/analyse_c1_c2_api_bancaire.pdf)
 
