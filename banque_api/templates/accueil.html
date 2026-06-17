@@ -3,98 +3,426 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Banque Bramael - Accueil</title>
+    <title>Banque Bramael - Interface</title>
     <style>
+        :root {
+            color-scheme: light;
+            --bg: #eef3f6;
+            --panel: #ffffff;
+            --text: #122033;
+            --muted: #59687c;
+            --line: #cfd8e1;
+            --accent: #136f63;
+            --accent-2: #a16207;
+            --shadow: 0 18px 42px rgba(18, 32, 51, 0.08);
+        }
+        * { box-sizing: border-box; }
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
             margin: 0;
-            padding: 40px 20px;
-            line-height: 1.6;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(180deg, #f8fafc 0%, var(--bg) 100%);
+            color: var(--text);
         }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            padding: 40px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        .band { border-bottom: 1px solid rgba(18, 32, 51, 0.08); }
+        .inner { width: min(1180px, calc(100vw - 32px)); margin: 0 auto; }
+        .topbar .inner, .hero .inner {
+            display: flex;
+            justify-content: space-between;
+            gap: 24px;
+            padding: 22px 0;
         }
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 2.2rem;
-            text-align: center;
-        }
-        .welcome-text {
-            color: #666;
-            font-size: 1.1rem;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        .student-info {
-            background: #f9f9f9;
-            padding: 25px;
-            margin: 30px 0;
-        }
-        .student-name {
-            font-size: 1.3rem;
-            color: #333;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-        .student-details {
-            color: #555;
-            margin-bottom: 8px;
-        }
-        .course-info {
-            color: #444;
-        }
-        .api-link {
-            display: inline-block;
-            background: #007bff;
-            color: white;
-            padding: 12px 25px;
+        .title h1, .title p, .hero-copy h2, .hero-copy p { margin: 0; }
+        .title p, .hero-copy p, .muted, .card p { color: var(--muted); }
+        .nav, .toolbar { display: flex; flex-wrap: wrap; gap: 10px; }
+        .nav a, .button {
             text-decoration: none;
-            margin-top: 25px;
-            text-align: center;
+            border: 1px solid var(--line);
+            background: white;
+            color: var(--text);
+            padding: 10px 14px;
+            min-height: 42px;
+            cursor: pointer;
+        }
+        .button.primary { background: var(--accent); border-color: var(--accent); color: white; }
+        .button.secondary { background: #fff7ed; border-color: #fbbf24; color: #92400e; }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 18px;
+        }
+        .stat, .surface {
+            background: var(--panel);
+            box-shadow: var(--shadow);
+        }
+        .stat { padding: 16px; }
+        .stat label {
             display: block;
-            width: 250px;
-            margin: 25px auto 0;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            color: var(--muted);
         }
-        .api-link:hover {
-            background: #0056b3;
+        .stat strong { font-size: 1.35rem; }
+        .hero-side {
+            min-width: 320px;
+            background: linear-gradient(135deg, #18324a 0%, #136f63 100%);
+            color: white;
+            padding: 18px;
+            box-shadow: var(--shadow);
         }
-        .description {
-            color: #666;
-            margin: 25px 0;
-            text-align: center;
+        .hero-side h3 { margin: 0 0 12px; }
+        .hero-side ul { margin: 0; padding-left: 18px; line-height: 1.6; }
+        .workspace .inner {
+            display: grid;
+            grid-template-columns: 360px minmax(0, 1fr);
+            gap: 24px;
+            padding: 24px 0 32px;
+        }
+        .stack, .panel-grid, .form-grid, .list, .txn-list { display: grid; gap: 12px; }
+        .surface { padding: 18px; }
+        .surface h3 { margin: 0 0 14px; font-size: 1rem; }
+        .split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        label.field {
+            display: grid;
+            gap: 6px;
+            font-size: 0.92rem;
+            color: var(--muted);
+        }
+        input, select, textarea {
+            width: 100%;
+            min-height: 44px;
+            border: 1px solid var(--line);
+            padding: 11px 12px;
+            font: inherit;
+        }
+        textarea { min-height: 90px; resize: vertical; }
+        .card, .txn {
+            border: 1px solid var(--line);
+            background: #fbfdff;
+            padding: 14px;
+        }
+        .card h4, .txn h4 { margin: 0 0 6px; }
+        .card p, .txn p { margin: 0; }
+        .row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 12px;
+            align-items: center;
+        }
+        .status { min-height: 22px; font-size: 0.92rem; }
+        .status.success { color: var(--accent); }
+        .status.error { color: #b45309; }
+        .empty {
+            padding: 18px;
+            border: 1px dashed var(--line);
+            color: var(--muted);
+            background: #fafcff;
+        }
+        @media (max-width: 960px) {
+            .topbar .inner, .hero .inner, .workspace .inner, .split, .stats {
+                display: grid;
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Bienvenue</h1>
-        <p class="welcome-text">
-            Interface d'accueil de l'API de gestion de comptes bancaires
-        </p>
+    <header class="band topbar">
+        <div class="inner">
+            <div class="title">
+                <h1>Banque Bramael</h1>
+                <p>Interface d'exploitation de l'API Django REST bancaire</p>
+            </div>
+            <nav class="nav">
+                <a href="/docs/">Swagger</a>
+                <a href="/api/redoc/">ReDoc</a>
+                <a href="/api/tests-manuels/">Cas de test</a>
+            </nav>
+        </div>
+    </header>
 
-        <div class="student-info">
-            <div class="student-name">Demano Bramael</div>
-            <div class="student-details">Matricule : 25G2033</div>
-            <div class="course-info">
-                Ceci est le TP de l'étudiant comptant pour le cours de
-                <strong>ICT304</strong> à l'<strong>École ICT4D</strong>
+    <section class="band hero">
+        <div class="inner">
+            <div class="hero-copy">
+                <h2>Comptes bancaires, depots et retraits sur une page de travail</h2>
+                <p>Cette page s'adresse au TP : creation de comptes, consultation detaillee, depot, retrait et lecture de l'historique sans passer uniquement par Swagger.</p>
+                <div class="stats">
+                    <div class="stat"><label>Comptes actifs</label><strong id="stat-count">0</strong></div>
+                    <div class="stat"><label>Solde cumule</label><strong id="stat-balance">0,00</strong></div>
+                    <div class="stat"><label>Compte charge</label><strong id="stat-selected">Aucun</strong></div>
+                </div>
+            </div>
+            <aside class="hero-side">
+                <h3>Operations disponibles</h3>
+                <ul>
+                    <li>Creation de compte avec depot initial automatique</li>
+                    <li>Depot et retrait sur compte actif</li>
+                    <li>Consultation detaillee et historique</li>
+                    <li>Acces direct a la documentation et aux tests manuels</li>
+                </ul>
+            </aside>
+        </div>
+    </section>
+
+    <section class="band workspace">
+        <div class="inner">
+            <div class="stack">
+                <section class="surface">
+                    <h3>Nouveau compte</h3>
+                    <form id="create-form" class="form-grid">
+                        <label class="field">Numero de compte<input name="numero_compte" required></label>
+                        <label class="field">Nom du titulaire<input name="nom_titulaire" required></label>
+                        <label class="field">Type de compte
+                            <select name="type_compte">
+                                <option value="COURANT">COURANT</option>
+                                <option value="EPARGNE">EPARGNE</option>
+                                <option value="TERME">TERME</option>
+                            </select>
+                        </label>
+                        <label class="field">Solde initial<input name="solde" type="number" min="0" step="0.01" value="0"></label>
+                        <button class="button primary" type="submit">Creer</button>
+                    </form>
+                </section>
+
+                <section class="surface">
+                    <h3>Selection</h3>
+                    <form id="select-form" class="form-grid">
+                        <label class="field">Identifiant numerique<input id="selected-account-id" name="account_id" type="number" min="1"></label>
+                        <div class="toolbar">
+                            <button class="button primary" type="submit">Charger</button>
+                            <button class="button" id="refresh-button" type="button">Actualiser</button>
+                        </div>
+                    </form>
+                </section>
+
+                <section class="surface">
+                    <h3>Operations</h3>
+                    <div class="split">
+                        <form id="deposit-form" class="form-grid">
+                            <label class="field">Compte<input name="account_id" type="number" min="1" required></label>
+                            <label class="field">Montant<input name="montant" type="number" min="1" step="0.01" required></label>
+                            <label class="field">Description<textarea name="description"></textarea></label>
+                            <button class="button primary" type="submit">Deposer</button>
+                        </form>
+                        <form id="withdraw-form" class="form-grid">
+                            <label class="field">Compte<input name="account_id" type="number" min="1" required></label>
+                            <label class="field">Montant<input name="montant" type="number" min="1" step="0.01" required></label>
+                            <label class="field">Description<textarea name="description"></textarea></label>
+                            <button class="button secondary" type="submit">Retirer</button>
+                        </form>
+                    </div>
+                </section>
+            </div>
+
+            <div class="panel-grid">
+                <section class="surface">
+                    <h3>Comptes actifs</h3>
+                    <div id="account-list" class="list"></div>
+                </section>
+                <section class="surface">
+                    <h3>Compte selectionne</h3>
+                    <div id="account-detail"></div>
+                </section>
+                <section class="surface">
+                    <h3>Transactions</h3>
+                    <div id="transactions" class="txn-list"></div>
+                </section>
+                <section class="surface">
+                    <h3>Etat</h3>
+                    <div id="status" class="status muted"></div>
+                </section>
             </div>
         </div>
+    </section>
 
-        <p class="description">
-            Cette API REST permet de gérer les comptes bancaires, les dépôts,
-            les retraits, l'historique des transactions et les cas de test manuels.
-        </p>
+    <script>
+        const state = {
+            accounts: [],
+            selectedId: "",
+            selectedAccount: null,
+        };
 
-        <a href="/docs/" class="api-link">
-            Consulter la documentation de l'API
-        </a>
-    </div>
+        const accountListEl = document.getElementById("account-list");
+        const detailEl = document.getElementById("account-detail");
+        const transactionsEl = document.getElementById("transactions");
+        const statusEl = document.getElementById("status");
+
+        function setStatus(message, tone = "") {
+            statusEl.className = `status ${tone}`.trim();
+            statusEl.textContent = message || "";
+        }
+
+        async function api(path, options = {}) {
+            const response = await fetch(path, {
+                headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+                ...options,
+            });
+            const text = await response.text();
+            const data = text ? JSON.parse(text) : null;
+            if (!response.ok) {
+                throw new Error(data?.erreur || JSON.stringify(data) || `Erreur HTTP ${response.status}`);
+            }
+            return data;
+        }
+
+        function money(value) {
+            return Number(value || 0).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function renderStats() {
+            const total = state.accounts.reduce((sum, account) => sum + Number(account.solde || 0), 0);
+            document.getElementById("stat-count").textContent = String(state.accounts.length);
+            document.getElementById("stat-balance").textContent = money(total);
+            document.getElementById("stat-selected").textContent = state.selectedAccount ? state.selectedAccount.numero_compte : "Aucun";
+        }
+
+        function renderAccounts() {
+            if (!state.accounts.length) {
+                accountListEl.innerHTML = '<div class="empty">Aucun compte actif charge.</div>';
+                return;
+            }
+            accountListEl.innerHTML = state.accounts.map((account) => `
+                <article class="card row">
+                    <div>
+                        <h4>${account.nom_titulaire}</h4>
+                        <p>${account.numero_compte} · ${account.type_compte}</p>
+                        <p>Solde : ${money(account.solde)}</p>
+                    </div>
+                    <button class="button" data-select="${account.id}">Ouvrir</button>
+                </article>
+            `).join("");
+
+            accountListEl.querySelectorAll("[data-select]").forEach((button) => {
+                button.addEventListener("click", () => {
+                    document.getElementById("selected-account-id").value = button.dataset.select;
+                    loadAccount(button.dataset.select);
+                });
+            });
+        }
+
+        function renderDetail() {
+            if (!state.selectedAccount) {
+                detailEl.innerHTML = '<div class="empty">Selectionne un compte.</div>';
+                transactionsEl.innerHTML = '<div class="empty">Les transactions apparaitront ici.</div>';
+                renderStats();
+                return;
+            }
+
+            const account = state.selectedAccount;
+            detailEl.innerHTML = `
+                <div class="card">
+                    <h4>${account.nom_titulaire}</h4>
+                    <p>${account.numero_compte}</p>
+                    <p>Type : ${account.type_compte}</p>
+                    <p>Solde : ${money(account.solde)}</p>
+                    <p>Actif : ${account.actif ? "Oui" : "Non"}</p>
+                </div>
+            `;
+
+            if (!account.transactions?.length) {
+                transactionsEl.innerHTML = '<div class="empty">Aucune transaction.</div>';
+                renderStats();
+                return;
+            }
+
+            transactionsEl.innerHTML = account.transactions.map((tx) => `
+                <div class="txn">
+                    <h4>${tx.type_transaction}</h4>
+                    <p>Montant : ${money(tx.montant)}</p>
+                    <p>Solde avant : ${money(tx.solde_avant)}</p>
+                    <p>Solde apres : ${money(tx.solde_apres)}</p>
+                    <p>${tx.description || "Sans description"}</p>
+                </div>
+            `).join("");
+
+            renderStats();
+        }
+
+        async function refreshAccounts(preserveSelection = true) {
+            state.accounts = await api("/api/comptes/");
+            renderAccounts();
+            if (preserveSelection && state.selectedId && state.accounts.some((account) => String(account.id) === String(state.selectedId))) {
+                await loadAccount(state.selectedId, false);
+                return;
+            }
+            state.selectedId = "";
+            state.selectedAccount = null;
+            renderDetail();
+        }
+
+        async function loadAccount(id, announce = true) {
+            if (!id) throw new Error("Identifiant de compte manquant.");
+            state.selectedId = id;
+            state.selectedAccount = await api(`/api/comptes/${id}/`);
+            renderDetail();
+            if (announce) setStatus("Compte charge.", "success");
+        }
+
+        document.getElementById("create-form").addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const form = new FormData(event.currentTarget);
+            try {
+                const created = await api("/api/comptes/creer/", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        numero_compte: form.get("numero_compte"),
+                        nom_titulaire: form.get("nom_titulaire"),
+                        type_compte: form.get("type_compte"),
+                        solde: form.get("solde"),
+                    }),
+                });
+                event.currentTarget.reset();
+                await refreshAccounts(false);
+                document.getElementById("selected-account-id").value = created.id;
+                await loadAccount(created.id, false);
+                setStatus("Compte cree.", "success");
+            } catch (error) {
+                setStatus(error.message, "error");
+            }
+        });
+
+        document.getElementById("select-form").addEventListener("submit", async (event) => {
+            event.preventDefault();
+            try {
+                await loadAccount(document.getElementById("selected-account-id").value);
+            } catch (error) {
+                setStatus(error.message, "error");
+            }
+        });
+
+        async function wireOperation(formId, pathSuffix, message) {
+            document.getElementById(formId).addEventListener("submit", async (event) => {
+                event.preventDefault();
+                const form = new FormData(event.currentTarget);
+                try {
+                    await api(`/api/comptes/${form.get("account_id")}/${pathSuffix}/`, {
+                        method: "POST",
+                        body: JSON.stringify({
+                            montant: form.get("montant"),
+                            description: form.get("description"),
+                        }),
+                    });
+                    await refreshAccounts();
+                    setStatus(message, "success");
+                } catch (error) {
+                    setStatus(error.message, "error");
+                }
+            });
+        }
+
+        wireOperation("deposit-form", "depot", "Depot effectue.");
+        wireOperation("withdraw-form", "retrait", "Retrait effectue.");
+
+        document.getElementById("refresh-button").addEventListener("click", async () => {
+            try {
+                await refreshAccounts();
+                setStatus("Liste actualisee.", "success");
+            } catch (error) {
+                setStatus(error.message, "error");
+            }
+        });
+
+        refreshAccounts(false).catch((error) => setStatus(error.message, "error"));
+    </script>
 </body>
 </html>
