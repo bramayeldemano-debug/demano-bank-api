@@ -1,0 +1,30 @@
+digraph effectuer_depot {
+  rankdir=TB;
+  splines=ortho;
+  node [fontname="Helvetica", fontsize=10, shape=box, style="rounded,filled", fillcolor="#EAF4FF", color="#1F5A99"];
+  edge [fontname="Helvetica", fontsize=9, color="#444444"];
+
+  start [label="Début", shape=ellipse, fillcolor="#D5F5E3", color="#1E8449"];
+  n1 [label="Récupérer le compte"];
+  d1 [label="Compte introuvable ?", shape=diamond, fillcolor="#FFF3CD", color="#B9770E"];
+  d2 [label="Compte inactif ?", shape=diamond, fillcolor="#FFF3CD", color="#B9770E"];
+  n2 [label="Créer serializer\nd'opération"];
+  d3 [label="Données valides ?", shape=diamond, fillcolor="#FFF3CD", color="#B9770E"];
+  n3 [label="Lire montant et description"];
+  n4 [label="Mettre à jour le solde"];
+  n5 [label="Créer transaction DEPOT"];
+  ok [label="Retour HTTP 200", shape=ellipse, fillcolor="#D5F5E3", color="#1E8449"];
+  ko404 [label="Retour HTTP 404", shape=ellipse, fillcolor="#FADBD8", color="#C0392B"];
+  ko400a [label="Retour HTTP 400\n(compte inactif)", shape=ellipse, fillcolor="#FADBD8", color="#C0392B"];
+  ko400b [label="Retour HTTP 400\n(données invalides)", shape=ellipse, fillcolor="#FADBD8", color="#C0392B"];
+
+  start -> n1 -> d1;
+  d1 -> ko404 [label="Oui"];
+  d1 -> d2 [label="Non"];
+  d2 -> ko400a [label="Oui"];
+  d2 -> n2 [label="Non"];
+  n2 -> d3;
+  d3 -> ko400b [label="Non"];
+  d3 -> n3 [label="Oui"];
+  n3 -> n4 -> n5 -> ok;
+}
